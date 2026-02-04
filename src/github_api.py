@@ -1,15 +1,16 @@
 """
-Module de communication avec l'API GitHub.
+GitHub API communication module.
 """
 
 import requests
 import time
 from typing import Dict, List, Any
 from .config import API_BASE_URL, REPOS_PER_PAGE, API_RATE_LIMIT_DELAY
+from .i18n import translator
 
 
 def user_exists(username: str, headers: Dict[str, str]) -> bool:
-    """Vérifie si l'utilisateur existe sur GitHub."""
+    """Check if user exists on GitHub."""
     url = f"{API_BASE_URL}/users/{username}"
     try:
         response = requests.get(url, headers=headers, timeout=10)
@@ -20,12 +21,12 @@ def user_exists(username: str, headers: Dict[str, str]) -> bool:
 
 def fetch_all_starred_repos(username: str, headers: Dict[str, str]) -> List[Dict[str, Any]]:
     """
-    Récupère tous les dépôts étoilés de l'utilisateur.
+    Fetch all starred repositories for the user.
     """
     all_stars = []
     page = 1
 
-    print(f"🚀 Récupération des stars pour {username}...")
+    print(translator.get_text("fetching_stars").format(username))
 
     while True:
         url = f"{API_BASE_URL}/users/{username}/starred"
@@ -36,13 +37,13 @@ def fetch_all_starred_repos(username: str, headers: Dict[str, str]) -> List[Dict
                 url, headers=headers, params=params, timeout=10)
 
             if response.status_code == 404:
-                print(f"❌ Utilisateur '{username}' introuvable.")
+                print(translator.get_text("user_not_found_api").format(username))
                 break
             elif response.status_code == 403:
-                print("❌ Limite API atteinte. Utilise un token pour continuer.")
+                print(translator.get_text("api_rate_limit"))
                 break
             elif response.status_code != 200:
-                print(f"❌ Erreur API: {response.status_code}")
+                print(translator.get_text("api_error").format(response.status_code))
                 break
 
             data = response.json()
@@ -50,14 +51,14 @@ def fetch_all_starred_repos(username: str, headers: Dict[str, str]) -> List[Dict
                 break
 
             all_stars.extend(data)
-            print(f"✅ Page {page} récupérée ({len(data)} repos)...")
+            print(translator.get_text("page_fetched").format(page, len(data)))
             page += 1
 
             time.sleep(API_RATE_LIMIT_DELAY)
 
         except requests.exceptions.RequestException as e:
-            print(f"❌ Erreur de connexion: {e}")
+            print(translator.get_text("connection_error").format(e))
             break
 
-    print(f"📦 Total : {len(all_stars)} étoiles.")
+    print(translator.get_text("total_stars").format(len(all_stars)))
     return all_stars

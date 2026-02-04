@@ -1,14 +1,15 @@
 """
-Logique de tri et de classification des repositories.
+Repository sorting and classification logic.
 """
 
 from typing import Dict, List, Any
 from .config import CATEGORIES, SCORE
+from .i18n import translator
 
 
 def get_smart_category(repo: Dict[str, Any]) -> str:
     """
-    Analyse le repo pour lui attribuer la meilleure catégorie.
+    Analyze repository to assign the best category.
     """
     name = str(repo.get("name") or "").lower()
     desc = str(repo.get("description") or "").lower()
@@ -29,18 +30,21 @@ def get_smart_category(repo: Dict[str, Any]) -> str:
                 else:
                     scores[category] += SCORE["GENERAL_MATCH"]
 
-    best_cat = max(scores, key=scores.get)
-    return best_cat if scores[best_cat] > 0 else "Uncategorized"
+    if all(score == 0 for score in scores.values()):
+        return translator.get_text("uncategorized")
+
+    max_category = max(scores.items(), key=lambda x: x[1])[0]
+    return max_category
 
 
 def organize_by_category(repos: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
     """
-    Classe une liste de repos dans un dictionnaire de catégories.
+    Classifies a repos list into a category dictionary.
     """
-    print("🧠 Classification en cours...")
+    print("🧠 " + translator.get_text("classification_in_progress"))
 
     organized_data = {cat: [] for cat in CATEGORIES}
-    organized_data["Uncategorized"] = []
+    organized_data[translator.get_text("uncategorized")] = []
 
     for repo in repos:
         category = get_smart_category(repo)

@@ -1,22 +1,23 @@
 """
-Configuration et dictionnaire de mots-clés pour le GitHub Stars Sorter.
+Configuration and keyword dictionary for GitHub Stars Sorter.
 """
 
-# Constantes API
+# API Constants
 API_BASE_URL = "https://api.github.com"
 REPOS_PER_PAGE = 100
 API_RATE_LIMIT_DELAY = 0.5
 
-# Paramètres du système de tri
+# Sorting system settings
 SCORE = {
     "NAME_MATCH": 3,
     "TOPIC_MATCH": 2,
     "GENERAL_MATCH": 1
 }
 
-# Fichiers de sortie
+# Output files
 OUTPUT_DIR = "exports"
-JSON_FILENAME = "mes_stars_github_triees.json"
+FRENCH_JSON_FILENAME = "mes_stars_github.json"
+ENGLISH_JSON_FILENAME = "github_stars_sorted.json"
 MD_FILENAME = "README.md"
 
 # Mapping des catégories et de leurs mots-clés
