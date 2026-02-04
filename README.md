@@ -6,7 +6,7 @@
 
 ---
 
-`<a name="english"></a>`
+<a name="english"></a>
 
 ## 🇬🇧 English
 
@@ -59,7 +59,7 @@ The generated catalog looks like this:
 
 ---
 
-`<a name="français"></a>`
+<a name="français"></a>
 
 ## 🇫🇷 Français
 
